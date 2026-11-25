@@ -1,0 +1,26 @@
+name: Compress Xiaodou images
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  compress:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Convert PNGs to JPEG (quality 80)
+        run: |
+          magick xiaodou-img-official-4.png -quality 80 xiaodou-img-official-4.jpg
+          magick xiaodou-img-official-2.png -quality 80 xiaodou-img-official-2.jpg
+          magick xiaodou-img-official-proactive.png -quality 80 xiaodou-img-official-proactive.jpg
+          ls -l *.jpg
+      - name: Commit JPEGs
+        run: |
+          git config user.name "weiqiang612"
+          git config user.email "weiqiang612@users.noreply.github.com"
+          git add xiaodou-img-official-4.jpg xiaodou-img-official-2.jpg xiaodou-img-official-proactive.jpg
+          git diff --cached --quiet || git commit -m "Add compressed Xiaodou JPEGs (quality 80)"
+          git push
