@@ -15,9 +15,12 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick
       - name: Convert PNGs to JPEG (quality 80)
         run: |
-          magick xiaodou-img-official-4.png -quality 80 xiaodou-img-official-4.jpg
-          magick xiaodou-img-official-2.png -quality 80 xiaodou-img-official-2.jpg
-          magick xiaodou-img-official-proactive.png -quality 80 xiaodou-img-official-proactive.jpg
+          pwd
+          git ls-files | grep -i xiaodou
+          for src in $(git ls-files | grep -E 'xiaodou-img-official-(4|2|proactive)\.png$'); do
+            base=$(basename "$src" .png)
+            magick "$src" -quality 80 "$base.jpg"
+          done
           ls -l *.jpg
       - name: Commit JPEGs
         run: |
